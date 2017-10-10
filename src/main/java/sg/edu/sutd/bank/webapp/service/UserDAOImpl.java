@@ -13,7 +13,6 @@ import java.sql.SQLException;
 import sg.edu.sutd.bank.webapp.commons.ServiceException;
 import sg.edu.sutd.bank.webapp.model.User;
 
-
 public class UserDAOImpl extends AbstractDAOImpl implements UserDAO {
 
 	@Override
@@ -39,4 +38,22 @@ public class UserDAOImpl extends AbstractDAOImpl implements UserDAO {
 		}
 		return null;
 	}
+
+	@Override
+	public void create(User user) throws ServiceException {
+		Connection conn = connectDB();
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		try {
+			ps = prepareStmt(conn, "INSERT INTO USER(user_name, password) VALUES(?,?)");
+			ps.setString(1, user.getUserName());
+			ps.setString(2, user.getPassword());
+			executeUpdate(user, ps);
+		} catch (SQLException e) {
+			throw ServiceException.wrap(e);
+		} finally {
+			closeDb(conn, ps, rs);
+		}
+	}
+
 }

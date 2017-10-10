@@ -11,6 +11,6 @@ import sg.edu.sutd.bank.webapp.model.ClientAccount;
 
 public interface ClientAccountDAO {
 
-	int create(ClientAccount account) throws ServiceException;
+	void create(ClientAccount account) throws ServiceException;
 
 }

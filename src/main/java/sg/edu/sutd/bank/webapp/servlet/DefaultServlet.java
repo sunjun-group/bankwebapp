@@ -26,6 +26,8 @@ public class DefaultServlet extends HttpServlet {
 		if (ServletPaths.LOGOUT.equals(req.getServletPath())) {
 			logout(req);
 			resp.sendRedirect(getRedirectPath(ServletPaths.LOGIN));
+		} else if (req.getServletPath().startsWith("/resources/")) {
+			forward(req, resp);
 		} else {
 			forward(req, resp);
 		}
@@ -34,7 +36,15 @@ public class DefaultServlet extends HttpServlet {
 	protected void forward(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		forward(req.getServletPath(), req, resp);
 	}
+	
+	protected void sendError(HttpServletRequest req, String msg) {
+		req.getSession().setAttribute("req_error", msg);
+	}
 
+	protected void sendMsg(HttpServletRequest req, String msg) {
+		req.getSession().setAttribute("req_msg", msg);
+	}
+	
 	private void logout(HttpServletRequest req) throws ServletException {
 		req.logout();
 		HttpSession session = req.getSession(false);
@@ -47,6 +57,10 @@ public class DefaultServlet extends HttpServlet {
 			throws ServletException, IOException {
 		RequestDispatcher view = req.getRequestDispatcher(getPath(path));
 		view.forward(req, resp);
+	}
+	
+	protected void redirect(HttpServletResponse resp, String templage) throws IOException {
+		resp.sendRedirect(getRedirectPath(templage));
 	}
 
 	protected String getPath(String template) {

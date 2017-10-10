@@ -13,4 +13,6 @@ public interface UserDAO {
 
 	User loadUser(String userName) throws ServiceException;
 
+	void create(User user) throws ServiceException;
+
 }

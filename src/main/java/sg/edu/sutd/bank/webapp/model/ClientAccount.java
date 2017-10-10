@@ -8,8 +8,7 @@ package sg.edu.sutd.bank.webapp.model;
 import java.sql.Date;
 
 
-public class ClientAccount {
-	private Integer id;
+public class ClientAccount extends AbstractIdEntity {
 	private String fullName;
 	private String fin;
 	private Date dateOfBirth;
@@ -17,14 +16,7 @@ public class ClientAccount {
 	private String mobileNumber;
 	private String address;
 	private String email;
-
-	public Integer getId() {
-		return id;
-	}
-
-	public void setId(Integer id) {
-		this.id = id;
-	}
+	private int userId;
 
 	public String getFullName() {
 		return fullName;
@@ -80,6 +72,14 @@ public class ClientAccount {
 
 	public void setEmail(String email) {
 		this.email = email;
+	}
+
+	public int getUserId() {
+		return userId;
+	}
+
+	public void setUserId(int userId) {
+		this.userId = userId;
 	}
 	
 }

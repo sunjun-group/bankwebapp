@@ -4,6 +4,11 @@
 
 	<display-name>SUTD Bank Web Application</display-name>
 
+	<servlet-mapping>
+		<servlet-name>default</servlet-name>
+		<url-pattern>/resources/*</url-pattern>
+	</servlet-mapping>
+
 	<servlet>
 		<servlet-name>Welcome</servlet-name>
 		<jsp-file>/WEB-INF/jsp/welcome.jsp</jsp-file>
@@ -17,7 +22,7 @@
 	<welcome-file-list>
 		<welcome-file>index.jsp</welcome-file>
 	</welcome-file-list>
-	
+
 	<login-config>
 		<auth-method>FORM</auth-method>
 		<realm-name>jdbcRealm</realm-name>
@@ -26,7 +31,7 @@
 			<form-error-page>/WEB-INF/jsp/login.jsp</form-error-page>
 		</form-login-config>
 	</login-config>
-	
+
 	<!-- security role -->
 	<security-role>
 		<role-name>client</role-name>
@@ -34,5 +39,5 @@
 	<security-role>
 		<role-name>staff</role-name>
 	</security-role>
-	
+
 </web-app>

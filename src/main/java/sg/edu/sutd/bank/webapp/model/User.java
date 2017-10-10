@@ -6,18 +6,10 @@
 package sg.edu.sutd.bank.webapp.model;
 
 
-public class User {
-	private int id;
+public class User extends AbstractIdEntity {
 	private String userName;
+	private String password;
 	private boolean active;
-
-	public int getId() {
-		return id;
-	}
-
-	public void setId(int id) {
-		this.id = id;
-	}
 
 	public String getUserName() {
 		return userName;
@@ -35,4 +27,12 @@ public class User {
 		this.active = active;
 	}
 
+	public String getPassword() {
+		return password;
+	}
+
+	public void setPassword(String password) {
+		this.password = password;
+	}
+	
 }

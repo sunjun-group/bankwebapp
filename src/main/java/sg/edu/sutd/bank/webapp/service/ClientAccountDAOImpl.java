@@ -16,14 +16,21 @@ import sg.edu.sutd.bank.webapp.model.ClientAccount;
 public class ClientAccountDAOImpl extends AbstractDAOImpl implements ClientAccountDAO {
 
 	@Override
-	public int create(ClientAccount account) throws ServiceException {
+	public void create(ClientAccount account) throws ServiceException {
 		Connection conn = connectDB();
 		PreparedStatement ps;
 		try {
-			ps = conn.prepareStatement("insert into client_account values(?,?,?,?)");
-			ps.setString(1, account.getFullName());
-			int i = ps.executeUpdate();
-			return i;
+			ps = prepareStmt(conn, "INSERT INTO CLIENT_ACCOUNT(full_name, fin, date_of_birth, occupation, mobile_number, address, user_id)"
+					+ " VALUES(?,?,?,?,?,?,?)");
+			int idx = 1;
+			ps.setString(idx++, account.getFullName());
+			ps.setString(idx++, account.getFin());
+			ps.setDate(idx++, account.getDateOfBirth());
+			ps.setString(idx++, account.getOccupation());
+			ps.setString(idx++, account.getMobileNumber());
+			ps.setString(idx++, account.getAddress());
+			ps.setInt(idx++, account.getUserId());
+			executeUpdate(account, ps);
 		} catch (SQLException e) {
 			throw ServiceException.wrap(e);
 		}

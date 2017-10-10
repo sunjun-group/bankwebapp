@@ -34,16 +34,17 @@ public class LoginServlet extends DefaultServlet {
 				HttpSession session = req.getSession(true);
 				session.setAttribute("authenticatedUser", req.getRemoteUser());
 				if (req.isUserInRole("client")) {
-					resp.sendRedirect(getRedirectPath(CLIENT_DASHBOARD_PAGE));
+					redirect(resp, CLIENT_DASHBOARD_PAGE);
 				} else if (req.isUserInRole("staff")) {
-					resp.sendRedirect(getRedirectPath(STAFF_DASHBOARD_PAGE));
+					redirect(resp, STAFF_DASHBOARD_PAGE);
 				}
 				return;
 			}
-			req.getSession().setAttribute("loginError", "Invalid username/password!");
+			sendError(req, "Invalid username/password!");
 		} catch(ServletException | ServiceException ex) {
-			req.getSession().setAttribute("loginError", ex.getMessage());
+			sendError(req, ex.getMessage());
 		}
 		forward(req, resp);
 	}
+
 }

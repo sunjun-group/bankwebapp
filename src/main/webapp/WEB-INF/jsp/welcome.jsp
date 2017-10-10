@@ -62,15 +62,17 @@
 	<c:if test="${not empty sessionScope.authenticatedUser}">
 		<!-- Logout form -->
 		<form id="logoutForm" action="logout" method="post">
-			<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}">
 		</form>
 	</c:if>
-	
-	<input id="csrf_name" type="hidden" value="${_csrf.parameterName}">
-	<input id="csrf_token" type="hidden" value="${_csrf.token}">
 
 	<div class="welcome">
-		<h1 style="text-align: center;padding-top: 150px;">Welcome to the bank!</h1>
+		<c:if test="${not empty req_msg}">
+			<h1 style="text-align: center;padding-top: 150px;">${req_msg}</h1>
+		</c:if>
+		<c:if test="${empty req_msg}">
+			<h1 style="text-align: center;padding-top: 150px;">Welcome to the bank!</h1>
+		</c:if>
+		<c:remove var="req_msg" scope="session" /> 
 	</div>
   </body>
 </html>

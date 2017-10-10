@@ -64,12 +64,12 @@
 			<div class="containter loginForm">
 				<form id="loginForm" action="login" method="post">
 					<div id="messageBox" class="hidden"></div>
-					<c:if test="${not empty loginError}">
+					<c:if test="${not empty req_error}">
 						<div id="errorMsg">
-							<p class="text-danger">${loginError}</p>
+							<p class="text-danger">${req_error}</p>
 						</div>
 					</c:if>
-					<c:remove var="loginError" scope="session" /> 
+					<c:remove var="req_error" scope="session" /> 
 					<div id="input-group-username" class="form-group">
 						<label for="username" class="control-label">User name</label>
 						<input type="text" class="form-control" id="username" name="username" placeholder="User name">

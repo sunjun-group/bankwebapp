@@ -53,11 +53,13 @@
 			<form id="registrationForm" action="register" method="post">
 				<div id="messageBox" class="hidden"></div>
 				
-				<c:if test="${param.error}">
-					<div id="errorMsg">
-						<p class="text-danger">${param.error}</p>
-					</div>
+				<c:if test="${not empty req_error}">
+						<div id="errorMsg">
+							<p class="text-danger">${req_error}</p>
+						</div>
 				</c:if>
+				<c:remove var="req_error" scope="session" /> 
+				
 				<div id="input-group-fullName" class="form-group">
 					<label for="fullName" class="control-label">Full Name</label>
 					<input type="text" class="form-control" id="fullName" name="fullName" placeholder="Full Name">
@@ -107,5 +109,6 @@
     ================================================== -->
     <!-- Placed at the end of the document so the pages load faster -->
     <script type="text/javascript" src="<c:url value="/resources/js/bootstrap.min.js" />"></script>
+    <script type="text/javascript" src="<c:url value="/resources/js/register.js" />"></script>
   </body>
 </html>

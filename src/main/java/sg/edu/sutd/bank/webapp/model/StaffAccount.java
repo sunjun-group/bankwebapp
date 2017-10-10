@@ -6,6 +6,6 @@
 package sg.edu.sutd.bank.webapp.model;
 
 
-public class StaffAccount {
+public class StaffAccount extends AbstractIdEntity {
 
 }
