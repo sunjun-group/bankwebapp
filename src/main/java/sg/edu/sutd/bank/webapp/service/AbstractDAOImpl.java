@@ -29,7 +29,7 @@ public abstract class AbstractDAOImpl {
 		connectionProps.setProperty("password", bundle.getString("jdbc.password"));
 	}
 	
-	protected void executeUpdate(AbstractIdEntity entity, PreparedStatement ps) throws SQLException {
+	protected void executeInsert(AbstractIdEntity entity, PreparedStatement ps) throws SQLException {
 		int rowNum = ps.executeUpdate();
 		if (rowNum == 0) {
 			throw new SQLException("Update failed, no rows affected!");

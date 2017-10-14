@@ -15,6 +15,7 @@ import javax.servlet.http.HttpSession;
 
 import sg.edu.sutd.bank.webapp.commons.ServiceException;
 import sg.edu.sutd.bank.webapp.model.User;
+import sg.edu.sutd.bank.webapp.model.UserStatus;
 import sg.edu.sutd.bank.webapp.service.UserDAO;
 import sg.edu.sutd.bank.webapp.service.UserDAOImpl;
 
@@ -29,7 +30,7 @@ public class LoginServlet extends DefaultServlet {
 		try {
 			String userName = req.getParameter("username");
 			User user = userDAO.loadUser(userName);
-			if (user != null && user.isActive()) {
+			if (user != null && (user.getStatus() == UserStatus.APPROVED)) {
 				req.login(userName, req.getParameter("password"));
 				HttpSession session = req.getSession(true);
 				session.setAttribute("authenticatedUser", req.getRemoteUser());

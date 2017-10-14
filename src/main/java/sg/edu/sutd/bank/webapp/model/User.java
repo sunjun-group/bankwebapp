@@ -9,7 +9,7 @@ package sg.edu.sutd.bank.webapp.model;
 public class User extends AbstractIdEntity {
 	private String userName;
 	private String password;
-	private boolean active;
+	private UserStatus status;
 
 	public String getUserName() {
 		return userName;
@@ -19,20 +19,28 @@ public class User extends AbstractIdEntity {
 		this.userName = userName;
 	}
 
-	public boolean isActive() {
-		return active;
-	}
-
-	public void setActive(boolean active) {
-		this.active = active;
-	}
-
 	public String getPassword() {
 		return password;
 	}
 
 	public void setPassword(String password) {
 		this.password = password;
+	}
+
+	public UserStatus getStatus() {
+		return status;
+	}
+
+	public void setStatus(UserStatus status) {
+		this.status = status;
+	}
+
+	public void setStatus(String str) {
+		UserStatus status = null;
+		if (str != null) {
+			status = UserStatus.valueOf(str);
+		}
+		setStatus(status);
 	}
 	
 }

@@ -35,6 +35,10 @@ public class RegisterServlet extends DefaultServlet {
 
 	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		response.setContentType("text/html");
+		User user = new User();
+		user.setUserName(request.getParameter("username"));
+		user.setPassword(request.getParameter("password"));
+
 		ClientAccount clientAccount = new ClientAccount();
 		clientAccount.setFullName(request.getParameter("fullName"));
 		clientAccount.setFin(request.getParameter("fin"));
@@ -43,14 +47,10 @@ public class RegisterServlet extends DefaultServlet {
 		clientAccount.setMobileNumber(request.getParameter("mobileNumber"));
 		clientAccount.setAddress(request.getParameter("address"));
 		clientAccount.setEmail(request.getParameter("email"));
-		
-		User user = new User();
-		user.setUserName(request.getParameter("username"));
-		user.setPassword(request.getParameter("password"));
+		clientAccount.setUser(user);
 		
 		try {
 			userDAO.create(user);
-			clientAccount.setUserId(user.getId());
 			clientAccountDAO.create(clientAccount);
 			emailService.sendMail(clientAccount.getEmail(), "SutdBank registration", "Thank you for the registration!");
 			sendMsg(request, "You are successfully registered...");

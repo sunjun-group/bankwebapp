@@ -16,7 +16,7 @@ public class ClientAccount extends AbstractIdEntity {
 	private String mobileNumber;
 	private String address;
 	private String email;
-	private int userId;
+	private User user;
 
 	public String getFullName() {
 		return fullName;
@@ -74,12 +74,12 @@ public class ClientAccount extends AbstractIdEntity {
 		this.email = email;
 	}
 
-	public int getUserId() {
-		return userId;
+	public User getUser() {
+		return user;
 	}
 
-	public void setUserId(int userId) {
-		this.userId = userId;
+	public void setUser(User user) {
+		this.user = user;
 	}
 	
 }
