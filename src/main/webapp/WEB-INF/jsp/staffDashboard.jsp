@@ -16,7 +16,7 @@
 			</c:if>
 			<c:remove var="req_error" scope="session" /> 
 		<div id="registrationList" >
-			<h2>Client registration list</h2>
+			<h2>Client Registration</h2>
 				<c:if test="${not empty registrationList}">
 				<form id="editRegistrationForm" action="staffDashboard" method="post" >
 					<table border="1" cellpadding="5" class="registerDecisionTable">
@@ -41,6 +41,7 @@
 										<option value="decline">Decline</option>
 									</select>
 									<input type="hidden" name="user_id" value="${client.user.id}"> 
+									<input type="hidden" name="user_email" value="${client.email}">
 								</td>
 							</tr>
 						</c:forEach>
@@ -61,7 +62,7 @@
 		
 		<div id="transactionList" >
 			<form id="editTransactionForm" action="staffDashboard" method="post" >
-				<h2>Client registration list</h2>
+				<h2>Client Transactions</h2>
 				<input type="hidden" name="actionType" value="transactionDecisionAction">
 				<!-- Record internal toolbar -->
 				<div id="submitBar">

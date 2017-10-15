@@ -8,7 +8,7 @@ package sg.edu.sutd.bank.webapp.model;
 import java.sql.Date;
 
 
-public class ClientAccount extends AbstractIdEntity {
+public class ClientInfo extends AbstractIdEntity {
 	private String fullName;
 	private String fin;
 	private Date dateOfBirth;

@@ -16,11 +16,16 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import sg.edu.sutd.bank.webapp.commons.ServiceException;
-import sg.edu.sutd.bank.webapp.model.ClientAccount;
+import sg.edu.sutd.bank.webapp.commons.StringUtils;
+import sg.edu.sutd.bank.webapp.model.ClientInfo;
 import sg.edu.sutd.bank.webapp.model.User;
 import sg.edu.sutd.bank.webapp.model.UserStatus;
-import sg.edu.sutd.bank.webapp.service.ClientAccountDAO;
-import sg.edu.sutd.bank.webapp.service.ClientAccountDAOImpl;
+import sg.edu.sutd.bank.webapp.service.ClientInfoDAO;
+import sg.edu.sutd.bank.webapp.service.ClientInfoDAOImpl;
+import sg.edu.sutd.bank.webapp.service.EmailService;
+import sg.edu.sutd.bank.webapp.service.EmailServiceImp;
+import sg.edu.sutd.bank.webapp.service.TransactionCodesDAO;
+import sg.edu.sutd.bank.webapp.service.TransactionCodesDAOImp;
 import sg.edu.sutd.bank.webapp.service.UserDAO;
 import sg.edu.sutd.bank.webapp.service.UserDAOImpl;
 
@@ -30,13 +35,15 @@ public class StaffDashboardServlet extends DefaultServlet {
 	public static final String TRANSACTION_DECSION_ACTION = "transactionDecisionAction";
 	
 	private static final long serialVersionUID = 1L;
-	private ClientAccountDAO clientAccountDAO = new ClientAccountDAOImpl();
+	private ClientInfoDAO clientAccountDAO = new ClientInfoDAOImpl();
 	private UserDAO userDAO = new UserDAOImpl();
+	private EmailService emailService = new EmailServiceImp();
+	private TransactionCodesDAO transactionCodesDAO = new TransactionCodesDAOImp();
 
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		try {
-			List<ClientAccount> accountList = clientAccountDAO.loadWaitingList();
+			List<ClientInfo> accountList = clientAccountDAO.loadWaitingList();
 			req.getSession().setAttribute("registrationList", accountList);
 		} catch (ServiceException e) {
 			sendError(req, e.getMessage());
@@ -48,19 +55,25 @@ public class StaffDashboardServlet extends DefaultServlet {
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		String actionType = req.getParameter("actionType");
 		if (REGISTRATION_DECISION_ACTION.endsWith(actionType)) {
-			onRegistrationDecisionAction(req, resp);
+			try {
+				onRegistrationDecisionAction(req, resp);
+			} catch (ServiceException e) {
+				sendError(req, e.getMessage());
+				redirect(resp, STAFF_DASHBOARD_PAGE);
+			}
 		} else if (TRANSACTION_DECSION_ACTION.equals(actionType)) {
 			onTransactionDecisionAction(req, resp);
 		}
 	}
 
 	private void onRegistrationDecisionAction(HttpServletRequest req, HttpServletResponse resp)
-			throws ServletException, IOException {
+			throws ServletException, IOException, ServiceException {
 		String[] decisions = req.getParameterValues("decision");
-		String[] userIds = req.getParameterValues("user_id");
+		int[] userIds = toIntegerArray(req.getParameterValues("user_id"));
+		String[] userEmails = req.getParameterValues("user_email");
 		List<User> users = new ArrayList<User>();
 		for (int i = 0; i < userIds.length; i++) {
-			int userId = Integer.valueOf(userIds[i]);
+			int userId = userIds[i];
 			Decision decision = Decision.valueOf(decisions[i]);
 			if (decision.getStatus() != null) {
 				User user = new User();
@@ -76,7 +89,28 @@ public class StaffDashboardServlet extends DefaultServlet {
 				sendError(req, e.getMessage());
 			}
 		}
+		sendTransactionCodes(userEmails, userIds, decisions);
 		redirect(resp, STAFF_DASHBOARD_PAGE);
+	}
+	
+	private int[] toIntegerArray(String[] idStrs) {
+		int[] result = new int[idStrs.length];
+		for (int i = 0; i < idStrs.length; i++) {
+			result[i] = Integer.valueOf(idStrs[i]);
+		}
+		return result;
+	}
+
+	private void sendTransactionCodes(String[] userEmails, int[] userIds, String[] decisions) throws ServiceException {
+		for (int i = 0; i < userIds.length; i++) {
+			if (Decision.valueOf(decisions[i]) == Decision.approve) {
+				List<String> codes = TransactionCodeGenerator.generateCodes(100);
+				transactionCodesDAO.create(codes, userIds[i]);
+				emailService.sendMail(userEmails[i], "Your account has been approved ",
+						"Congratulation, your account has been approved! These are your transaction codes: \n"
+								+ StringUtils.join(codes, "\n"));
+			}
+		}
 	}
 
 	private void onTransactionDecisionAction(HttpServletRequest req, HttpServletResponse resp)

@@ -14,10 +14,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import sg.edu.sutd.bank.webapp.commons.ServiceException;
-import sg.edu.sutd.bank.webapp.model.ClientAccount;
+import sg.edu.sutd.bank.webapp.model.ClientInfo;
 import sg.edu.sutd.bank.webapp.model.User;
-import sg.edu.sutd.bank.webapp.service.ClientAccountDAO;
-import sg.edu.sutd.bank.webapp.service.ClientAccountDAOImpl;
+import sg.edu.sutd.bank.webapp.service.ClientInfoDAO;
+import sg.edu.sutd.bank.webapp.service.ClientInfoDAOImpl;
 import sg.edu.sutd.bank.webapp.service.EmailService;
 import sg.edu.sutd.bank.webapp.service.EmailServiceImp;
 import sg.edu.sutd.bank.webapp.service.UserDAO;
@@ -29,7 +29,7 @@ import sg.edu.sutd.bank.webapp.service.UserDAOImpl;
 @WebServlet("/register")
 public class RegisterServlet extends DefaultServlet {
 	private static final long serialVersionUID = 1L;
-	private ClientAccountDAO clientAccountDAO = new ClientAccountDAOImpl();
+	private ClientInfoDAO clientAccountDAO = new ClientInfoDAOImpl();
 	private UserDAO userDAO = new UserDAOImpl();
 	private EmailService emailService = new EmailServiceImp();
 
@@ -39,7 +39,7 @@ public class RegisterServlet extends DefaultServlet {
 		user.setUserName(request.getParameter("username"));
 		user.setPassword(request.getParameter("password"));
 
-		ClientAccount clientAccount = new ClientAccount();
+		ClientInfo clientAccount = new ClientInfo();
 		clientAccount.setFullName(request.getParameter("fullName"));
 		clientAccount.setFin(request.getParameter("fin"));
 		clientAccount.setDateOfBirth(Date.valueOf(request.getParameter("dateOfBirth")));
