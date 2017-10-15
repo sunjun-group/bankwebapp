@@ -17,4 +17,8 @@ public interface ClientTransactionDAO {
 	void create(ClientTransaction clientTransaction) throws ServiceException;
 
 	List<ClientTransaction> load(User user) throws ServiceException;
+	
+	List<ClientTransaction> loadWaitingList() throws ServiceException;
+
+	void updateDecision(List<ClientTransaction> transactions) throws ServiceException;
 }

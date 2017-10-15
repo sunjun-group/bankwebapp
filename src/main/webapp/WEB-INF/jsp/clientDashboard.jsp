@@ -33,7 +33,7 @@
 						<c:if test="${empty trans.status}">
 							<td>Waiting</td>
 						</c:if>
-						<c:if test="${trans.status}">
+						<c:if test="${not empty trans.status}">
 							<td>${trans.status}</td>
 						</c:if>
 					</tr>

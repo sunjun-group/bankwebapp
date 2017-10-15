@@ -20,12 +20,16 @@ import sg.edu.sutd.bank.webapp.commons.ServiceException;
 import sg.edu.sutd.bank.webapp.commons.StringUtils;
 import sg.edu.sutd.bank.webapp.model.ClientAccount;
 import sg.edu.sutd.bank.webapp.model.ClientInfo;
+import sg.edu.sutd.bank.webapp.model.ClientTransaction;
+import sg.edu.sutd.bank.webapp.model.TransactionStatus;
 import sg.edu.sutd.bank.webapp.model.User;
 import sg.edu.sutd.bank.webapp.model.UserStatus;
 import sg.edu.sutd.bank.webapp.service.ClientAccountDAO;
 import sg.edu.sutd.bank.webapp.service.ClientAccountDAOImpl;
 import sg.edu.sutd.bank.webapp.service.ClientInfoDAO;
 import sg.edu.sutd.bank.webapp.service.ClientInfoDAOImpl;
+import sg.edu.sutd.bank.webapp.service.ClientTransactionDAO;
+import sg.edu.sutd.bank.webapp.service.ClientTransactionDAOImpl;
 import sg.edu.sutd.bank.webapp.service.EmailService;
 import sg.edu.sutd.bank.webapp.service.EmailServiceImp;
 import sg.edu.sutd.bank.webapp.service.TransactionCodesDAO;
@@ -44,12 +48,15 @@ public class StaffDashboardServlet extends DefaultServlet {
 	private ClientAccountDAO clientAccountDAO = new ClientAccountDAOImpl();
 	private EmailService emailService = new EmailServiceImp();
 	private TransactionCodesDAO transactionCodesDAO = new TransactionCodesDAOImp();
+	private ClientTransactionDAO clientTransactionDAO = new ClientTransactionDAOImpl();
 
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		try {
 			List<ClientInfo> accountList = clientInfoDAO.loadWaitingList();
 			req.getSession().setAttribute("registrationList", accountList);
+			List<ClientTransaction> transList = clientTransactionDAO.loadWaitingList();
+			req.getSession().setAttribute("transList", transList);
 		} catch (ServiceException e) {
 			sendError(req, e.getMessage());
 		}
@@ -127,21 +134,47 @@ public class StaffDashboardServlet extends DefaultServlet {
 
 	private void onTransactionDecisionAction(HttpServletRequest req, HttpServletResponse resp)
 			throws ServletException, IOException {
-		forward(req, resp);
+		String[] decisions = req.getParameterValues("decision");
+		int[] transIds = toIntegerArray(req.getParameterValues("trans_id"));
+		List<ClientTransaction> transactions = new ArrayList<ClientTransaction>();
+		for (int i = 0; i < transIds.length; i++) {
+			int transId = transIds[i];
+			Decision decision = Decision.valueOf(decisions[i]);
+			if (decision.getStatus() != null) {
+				ClientTransaction trans = new ClientTransaction();
+				trans.setId(transId);
+				trans.setStatus(decision.getTransStatus());
+				transactions.add(trans );
+			}
+		}
+		if (!transactions.isEmpty()) {
+			try {
+				clientTransactionDAO.updateDecision(transactions);
+			} catch (ServiceException e) {
+				sendError(req, e.getMessage());
+			}
+		}
+		redirect(resp, STAFF_DASHBOARD_PAGE);
 	}
 	
 	private static enum Decision {
-		waiting(null), 
-		approve(UserStatus.APPROVED), 
-		decline(UserStatus.DECLINED);
+		waiting(null, null), 
+		approve(UserStatus.APPROVED, TransactionStatus.APPROVED), 
+		decline(UserStatus.DECLINED, TransactionStatus.DECLINED);
 		
 		private UserStatus status;
-		private Decision(UserStatus status) {
+		private TransactionStatus transStatus;
+		private Decision(UserStatus status, TransactionStatus transStatus) {
 			this.status = status;
+			this.transStatus = transStatus;
 		}
 
 		public UserStatus getStatus() {
 			return status;
+		}
+		
+		public TransactionStatus getTransStatus() {
+			return transStatus;
 		}
 	}
 }

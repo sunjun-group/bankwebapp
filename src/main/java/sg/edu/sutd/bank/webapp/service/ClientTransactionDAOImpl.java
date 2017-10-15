@@ -68,4 +68,65 @@ public class ClientTransactionDAOImpl extends AbstractDAOImpl implements ClientT
 		}
 	}
 
+	@Override
+	public List<ClientTransaction> loadWaitingList() throws ServiceException {
+		Connection conn = connectDB();
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		try {
+			ps = conn.prepareStatement(
+					"SELECT * FROM client_transaction WHERE status is null");
+			rs = ps.executeQuery();
+			List<ClientTransaction> transactions = new ArrayList<ClientTransaction>();
+			while (rs.next()) {
+				ClientTransaction trans = new ClientTransaction();
+				trans.setId(rs.getInt("id"));
+				User user = new User(rs.getInt("user_id"));
+				trans.setUser(user);
+				trans.setAmount(rs.getBigDecimal("amount"));
+				trans.setDateTime(rs.getDate("datetime"));
+				trans.setTransCode(rs.getString("trans_code"));
+				trans.setToAccountNum(rs.getString("to_account_num"));
+				transactions.add(trans);
+			}
+			return transactions;
+		} catch (SQLException e) {
+			throw ServiceException.wrap(e);
+		} finally {
+			closeDb(conn, ps, rs);
+		}
+	}
+
+	@Override
+	public void updateDecision(List<ClientTransaction> transactions) throws ServiceException {
+		StringBuilder query = new StringBuilder("UPDATE client_transaction SET status = Case id ");
+		for (ClientTransaction trans : transactions) {
+			query.append(String.format("WHEN %d THEN '%s' ", trans.getId(), trans.getStatus().name()));
+		}
+		query.append("ELSE status ")
+			.append("END ")
+			.append("WHERE id IN(");
+		for (int i = 0; i < transactions.size(); i++) {
+			query.append(transactions.get(i).getId());
+			if (i < transactions.size() - 1) {
+				query.append(", ");
+			}
+		}
+		query.append(");");
+		Connection conn = connectDB();
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		try {
+			ps = prepareStmt(conn, query.toString());
+			int rowNum = ps.executeUpdate();
+			if (rowNum == 0) {
+				throw new SQLException("Update failed, no rows affected!");
+			}
+		} catch (SQLException e) {
+			throw ServiceException.wrap(e);
+		} finally {
+			closeDb(conn, ps, rs);
+		}
+	}
+
 }
