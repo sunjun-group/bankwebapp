@@ -40,7 +40,15 @@ public class DefaultServlet extends HttpServlet {
 	protected void sendError(HttpServletRequest req, String msg) {
 		req.getSession().setAttribute("req_error", msg);
 	}
-
+	
+	protected int getUserId(HttpServletRequest req) {
+		return (int) req.getSession().getAttribute("user_id");
+	}
+	
+	protected void setUserId(HttpServletRequest req, Integer userId) {
+		req.getSession(false).setAttribute("user_id", userId);
+	}
+	
 	protected void sendMsg(HttpServletRequest req, String msg) {
 		req.getSession().setAttribute("req_msg", msg);
 	}

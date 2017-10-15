@@ -15,13 +15,17 @@ import javax.servlet.http.HttpServletResponse;
 
 import sg.edu.sutd.bank.webapp.commons.ServiceException;
 import sg.edu.sutd.bank.webapp.model.ClientInfo;
+import sg.edu.sutd.bank.webapp.model.Role;
 import sg.edu.sutd.bank.webapp.model.User;
+import sg.edu.sutd.bank.webapp.model.UserRole;
 import sg.edu.sutd.bank.webapp.service.ClientInfoDAO;
 import sg.edu.sutd.bank.webapp.service.ClientInfoDAOImpl;
 import sg.edu.sutd.bank.webapp.service.EmailService;
 import sg.edu.sutd.bank.webapp.service.EmailServiceImp;
 import sg.edu.sutd.bank.webapp.service.UserDAO;
 import sg.edu.sutd.bank.webapp.service.UserDAOImpl;
+import sg.edu.sutd.bank.webapp.service.UserRoleDAO;
+import sg.edu.sutd.bank.webapp.service.UserRoleDAOImpl;
 
 /**
  * @author SUTD
@@ -31,6 +35,7 @@ public class RegisterServlet extends DefaultServlet {
 	private static final long serialVersionUID = 1L;
 	private ClientInfoDAO clientAccountDAO = new ClientInfoDAOImpl();
 	private UserDAO userDAO = new UserDAOImpl();
+	private UserRoleDAO userRoleDAO = new UserRoleDAOImpl();
 	private EmailService emailService = new EmailServiceImp();
 
 	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -52,6 +57,10 @@ public class RegisterServlet extends DefaultServlet {
 		try {
 			userDAO.create(user);
 			clientAccountDAO.create(clientAccount);
+			UserRole userRole = new UserRole();
+			userRole.setUser(user);
+			userRole.setRole(Role.client);
+			userRoleDAO.create(userRole );
 			emailService.sendMail(clientAccount.getEmail(), "SutdBank registration", "Thank you for the registration!");
 			sendMsg(request, "You are successfully registered...");
 			redirect(response, ServletPaths.WELCOME);

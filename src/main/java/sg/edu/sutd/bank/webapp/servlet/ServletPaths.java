@@ -13,4 +13,5 @@ public class ServletPaths {
 	public static final String CLIENT_DASHBOARD_PAGE = "/clientDashboard";
 	public static final String STAFF_DASHBOARD_PAGE = "/staffDashboard";
 	public static final String WELCOME = "/welcome";
+	public static final String NEW_TRANSACTION = "/newTransaction";
 }

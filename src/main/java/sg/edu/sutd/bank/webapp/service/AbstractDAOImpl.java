@@ -43,6 +43,13 @@ public abstract class AbstractDAOImpl {
 		}
 	}
 	
+	protected void executeUpdate(PreparedStatement ps) throws SQLException {
+		int rowNum = ps.executeUpdate();
+		if (rowNum == 0) {
+			throw new SQLException("Update failed, no rows affected!");
+		}
+	}
+	
 	protected PreparedStatement prepareStmt(Connection conn, String query) throws SQLException {
 		return conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
 	}

@@ -19,7 +19,7 @@
 			<h2>Client Registration</h2>
 				<c:if test="${not empty registrationList}">
 				<form id="editRegistrationForm" action="staffDashboard" method="post" >
-					<table border="1" cellpadding="5" class="registerDecisionTable">
+					<table border="1" cellpadding="5" class="commonTable">
 						<tr>
 							<th style="width: 150px">Full name</th>
 							<th style="width: 150px">FIN</th>

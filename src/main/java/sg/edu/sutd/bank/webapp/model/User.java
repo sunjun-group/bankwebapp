@@ -11,6 +11,13 @@ public class User extends AbstractIdEntity {
 	private String password;
 	private UserStatus status;
 
+	public User() {
+	}
+
+	public User(int userId) {
+		setId(userId);
+	}
+
 	public String getUserName() {
 		return userName;
 	}

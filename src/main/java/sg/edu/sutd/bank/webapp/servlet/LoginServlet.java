@@ -34,6 +34,7 @@ public class LoginServlet extends DefaultServlet {
 				req.login(userName, req.getParameter("password"));
 				HttpSession session = req.getSession(true);
 				session.setAttribute("authenticatedUser", req.getRemoteUser());
+				setUserId(req, user.getId());
 				if (req.isUserInRole("client")) {
 					redirect(resp, CLIENT_DASHBOARD_PAGE);
 				} else if (req.isUserInRole("staff")) {

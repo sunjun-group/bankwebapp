@@ -64,8 +64,8 @@ footer.sutd-template {
 }
 
 /* staff dashboard */
-.registerDecisionTable th, 
-.registerDecisionTable td {
+.commonTable th, 
+.commonTable td {
 	text-align: left;
 	padding: 4px;
 	line-height: 2;

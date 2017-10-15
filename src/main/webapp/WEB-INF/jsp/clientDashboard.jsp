@@ -3,73 +3,49 @@
 
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="author" content="phuc@sutd.edu.sg">
-    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
-    <link rel="icon" href="<c:url value="/resources/img/sutd-logo.ico" />">
-    <title>bankwebapp</title>
-
-    <!-- Bootstrap core CSS -->
-    <link rel="stylesheet" type="text/css" href="<c:url value="/resources/css/bootstrap.min.css" />">
-    <script type="text/javascript" src="<c:url value="/resources/js/jquery-1.11.3.js" />"></script>
-
-    <!-- Custom styles for this template -->
-    <link rel="stylesheet" type="text/css" href="<c:url value="/resources/css/bootstrap-theme.min.css" />">
-    <link rel="stylesheet" type="text/css" href="<c:url value="/resources/css/sons-of-obsidian.css" />">
-    <link rel="stylesheet" type="text/css" href="<c:url value="/resources/css/bankwebapp.css" />">
-
-    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
-    <!--[if lt IE 9]>
-      <script src="https://oss.maxcdn.com/html5shiv/3.7.2/html5shiv.min.js"></script>
-      <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
-    <![endif]-->
-    
-  </head>
-
+  <%@include file="pageHeader.jsp"%>
   <body>
-	<header class="sutd-template">
-	    <nav class="navbar navbar-inverse navbar-fixed-top">
-	      <div class="container">
-	        <div class="navbar-header">
-	          <button id="navbar-button" type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
-	            <span class="sr-only">Toggle navigation</span>
-	            <span class="icon-bar"></span>
-	            <span class="icon-bar"></span>
-	            <span class="icon-bar"></span>
-	          </button>
-	          <a class="navbar-brand" href="#"><img alt="SUTD Logo" src="<c:url value="/resources/img/sutd-logo.png" />"></a>
-	        </div>
-	        <div id="navbar" class="collapse navbar-collapse">
-	          <ul class="nav navbar-nav">
-	            <c:if test="${empty sessionScope.authenticatedUser}">
-	            	<li><a href="login">Login</a></li>
-	            	<li class="header-text">or</li>
-            	 	<li><a href="register">Register</a></li>
-	            </c:if>
-	            <c:if test="${not empty sessionScope.authenticatedUser}">
-	            	<li><a href="logout">Logout</a></li>
-	            </c:if>
-	          </ul>
-	        </div><!--/.nav-collapse -->
-	      </div>
-	    </nav>
-	</header>
-
-	<c:if test="${not empty sessionScope.authenticatedUser}">
-		<!-- Logout form -->
-		<form id="logoutForm" action="logout" method="post">
-			<input type="hidden" name="${_csrf.parameterName}" value="${_csrf.token}">
-		</form>
-	</c:if>
+	<%@include file="header.jsp"%>
 	
-	<input id="csrf_name" type="hidden" value="${_csrf.parameterName}">
-	<input id="csrf_token" type="hidden" value="${_csrf.token}">
-
-	<div class="welcome">
-		<h1 style="text-align: center;padding-top: 150px;">Welcome to client dashboard!</h1>
+	<main id="content" class="mainContent sutd-template" role="main">
+	<div class="container">
+		<%@include file="errorMessage.jsp"%>
+		<div id="accountBalance">
+			<h3>Account Balance:  </h3>
+			<div>${clientInfo.account.amount}</div>
+		</div>
+		<div id="transHistory">
+			<h3>Transaction History:  </h3>
+			<table border="1" cellpadding="5" class="commonTable">
+				<tr>
+					<th style="width: 150px">Transaction code</th>
+					<th style="width: 150px">To (account number)</th>
+					<th style="width: 150px">Datatime</th>
+					<th style="width: 150px">Amount</th>
+					<th style="width: 150px">Status</th>
+				</tr>
+				<c:forEach var="trans" items="${clientInfo.transactions}">
+					<tr>
+						<td>${trans.transCode}</td>
+						<td>${trans.toAccountNum}</td>
+						<td>${trans.dateTime}</td>
+						<td>${trans.amount}</td>
+						<c:if test="${empty trans.status}">
+							<td>Waiting</td>
+						</c:if>
+						<c:if test="${trans.status}">
+							<td>${trans.status}</td>
+						</c:if>
+					</tr>
+				</c:forEach>
+			</table>
+		</div>
+		<div id="createTransaction" style="padding-top: 50px">
+			<form id="registrationForm" action="newTransaction" method="get">
+				<button id="createTransBtn" type="submit" class="btn btn-default">New Transaction</button>
+			</form>
+		</div>
 	</div>
+	</main>
   </body>
 </html>

@@ -15,11 +15,15 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import sg.edu.sutd.bank.webapp.commons.Constants;
 import sg.edu.sutd.bank.webapp.commons.ServiceException;
 import sg.edu.sutd.bank.webapp.commons.StringUtils;
+import sg.edu.sutd.bank.webapp.model.ClientAccount;
 import sg.edu.sutd.bank.webapp.model.ClientInfo;
 import sg.edu.sutd.bank.webapp.model.User;
 import sg.edu.sutd.bank.webapp.model.UserStatus;
+import sg.edu.sutd.bank.webapp.service.ClientAccountDAO;
+import sg.edu.sutd.bank.webapp.service.ClientAccountDAOImpl;
 import sg.edu.sutd.bank.webapp.service.ClientInfoDAO;
 import sg.edu.sutd.bank.webapp.service.ClientInfoDAOImpl;
 import sg.edu.sutd.bank.webapp.service.EmailService;
@@ -35,15 +39,16 @@ public class StaffDashboardServlet extends DefaultServlet {
 	public static final String TRANSACTION_DECSION_ACTION = "transactionDecisionAction";
 	
 	private static final long serialVersionUID = 1L;
-	private ClientInfoDAO clientAccountDAO = new ClientInfoDAOImpl();
+	private ClientInfoDAO clientInfoDAO = new ClientInfoDAOImpl();
 	private UserDAO userDAO = new UserDAOImpl();
+	private ClientAccountDAO clientAccountDAO = new ClientAccountDAOImpl();
 	private EmailService emailService = new EmailServiceImp();
 	private TransactionCodesDAO transactionCodesDAO = new TransactionCodesDAOImp();
 
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		try {
-			List<ClientInfo> accountList = clientAccountDAO.loadWaitingList();
+			List<ClientInfo> accountList = clientInfoDAO.loadWaitingList();
 			req.getSession().setAttribute("registrationList", accountList);
 		} catch (ServiceException e) {
 			sendError(req, e.getMessage());
@@ -88,8 +93,8 @@ public class StaffDashboardServlet extends DefaultServlet {
 			} catch (ServiceException e) {
 				sendError(req, e.getMessage());
 			}
+			activateAccount(userEmails, userIds, decisions);
 		}
-		sendTransactionCodes(userEmails, userIds, decisions);
 		redirect(resp, STAFF_DASHBOARD_PAGE);
 	}
 	
@@ -101,11 +106,18 @@ public class StaffDashboardServlet extends DefaultServlet {
 		return result;
 	}
 
-	private void sendTransactionCodes(String[] userEmails, int[] userIds, String[] decisions) throws ServiceException {
+	private void activateAccount(String[] userEmails, int[] userIds, String[] decisions) throws ServiceException {
 		for (int i = 0; i < userIds.length; i++) {
 			if (Decision.valueOf(decisions[i]) == Decision.approve) {
+				int userId = userIds[i];
+				/* init account */
+				ClientAccount clientAccount = new ClientAccount();
+				clientAccount.setUser(new User(userId));
+				clientAccount.setAmount(Constants.INIT_AMOUNT);
+				clientAccountDAO.create(clientAccount);
+				/* generate and send transaction codes */
 				List<String> codes = TransactionCodeGenerator.generateCodes(100);
-				transactionCodesDAO.create(codes, userIds[i]);
+				transactionCodesDAO.create(codes, userId);
 				emailService.sendMail(userEmails[i], "Your account has been approved ",
 						"Congratulation, your account has been approved! These are your transaction codes: \n"
 								+ StringUtils.join(codes, "\n"));
