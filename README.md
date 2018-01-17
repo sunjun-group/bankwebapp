@@ -7,15 +7,15 @@ Set up to run in eclipse
 		+ src/main/resources: [configuration for database and email]
 			+ database.properties
 			+ email.properties
+			+ create.sql: mysql script to create tables. 
 	- /etc	[configuration/sql script]
-		+ create.sql: mysql script to create tables. 
 		+ server.xml: configuration for tomcat server
 	
 2. Prepare mysql server and create tables
-	- Install mysql by following instructions below:
+	- [Require] Install mysql by following instructions below:
 		+ For OS X: https://dev.mysql.com/doc/refman/5.7/en/osx-installation-pkg.html.
 		+ For Windows: https://dev.mysql.com/doc/workbench/en/wb-installing-windows.html.
-	- Execute /etc/create.sql [MySql Workbench (https://dev.mysql.com/downloads/workbench/) is one option of mysql client you can choose]
+	- [Optional] install mysql client application:ex: MySql Workbench (https://dev.mysql.com/downloads/workbench/) 
 
 3. Prepare eclipse
 	- Make sure that m2e plugin is installed (should already be included by default in newest eclipse version) .
@@ -42,13 +42,14 @@ Set up to run in eclipse
 4. Import project into eclipse
 	Prerequisite: Eclipse with m2e plugin, mysql server, web server (tomcat)
 	- Click on File/Import..., Select General/Existing Projects into workspace. Browse to sutdbank source folder, then click "finish".
-	- Update configurations under /src/main/resources:
-		+ database.properties (required).
-		+ email.properties (optional).
+	- Update configurations under /src/main/resources if necessary:
+		+ database.properties.
+		+ email.properties.
 	
 5. Run sutdbank-Webapp:
+	- Open class sutdbank.DbCreator run as Java Application to setup database.
 	- Select sutdbank project, right click and select Run as/Run on Server.  
-	- Access the web page with url: http://localhost:[port_as_being_configured_at_step_3]/sutdbank/
+	- Access the web page with url: http://localhost:3306/sutdbank/
 	- Default account for staff: [username/password]:   staff_1/123456
 	
 	

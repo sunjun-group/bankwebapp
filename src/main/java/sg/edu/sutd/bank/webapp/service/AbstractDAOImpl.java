@@ -21,7 +21,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.Properties;
 import java.util.ResourceBundle;
 
 import sg.edu.sutd.bank.webapp.commons.ServiceException;
@@ -29,14 +28,21 @@ import sg.edu.sutd.bank.webapp.model.AbstractIdEntity;
 
 
 public abstract class AbstractDAOImpl {
-	private static Properties connectionProps;
+	protected static String driverClassName;
+	protected static String dbUrl;
+	protected static String schemaUrl;
+	protected static String schema;
+	protected static String username;
+	protected static String password;
+	
 	static {
-		connectionProps = new Properties();
 		ResourceBundle bundle = ResourceBundle.getBundle("database");
-		connectionProps.setProperty("driverClassName", bundle.getString("jdbc.driverClassName"));
-		connectionProps.setProperty("url", bundle.getString("jdbc.url"));
-		connectionProps.setProperty("username", bundle.getString("jdbc.username"));
-		connectionProps.setProperty("password", bundle.getString("jdbc.password"));
+		driverClassName = bundle.getString("jdbc.driverClassName");
+		dbUrl = bundle.getString("jdbc.url");
+		schema = bundle.getString("jdbc.schema");
+		schemaUrl = dbUrl + schema;
+		username = bundle.getString("jdbc.username");
+		password = bundle.getString("jdbc.password");
 	}
 	
 	protected void executeInsert(AbstractIdEntity entity, PreparedStatement ps) throws SQLException {
@@ -64,20 +70,19 @@ public abstract class AbstractDAOImpl {
 		return conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
 	}
 	
-	public Connection connectDB() throws ServiceException {
+	public static Connection connectDB() throws ServiceException {
 		try {
-			Class.forName(connectionProps.getProperty("driverClassName"));
-			Connection conn = DriverManager.getConnection(connectionProps.getProperty("url"),
-					connectionProps.getProperty("username"), connectionProps.getProperty("password"));
+			Class.forName(driverClassName);
+			Connection conn = DriverManager.getConnection(schemaUrl, username, password);
 			return conn;
-		} catch (ClassNotFoundException e) {
-			throw ServiceException.wrap(e);
 		} catch (SQLException e) {
+			throw ServiceException.wrap(e);
+		} catch (ClassNotFoundException e) {
 			throw ServiceException.wrap(e);
 		}
 	}
 	
-	protected void closeDb(Connection connection, Statement statement, ResultSet resultSet) {
+	protected static void closeDb(Connection connection, Statement statement, ResultSet resultSet) {
 		if (resultSet != null)
 			try {
 				resultSet.close();
