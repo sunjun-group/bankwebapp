@@ -12,7 +12,7 @@ Set up to run in eclipse
 		+ server.xml: configuration for tomcat server
 	
 2. Prepare mysql server and create tables
-	- [Require] Install mysql by following instructions below:
+	- [Require] Install mysql by following instructions:
 		+ For OS X: https://dev.mysql.com/doc/refman/5.7/en/osx-installation-pkg.html.
 		+ For Windows: https://dev.mysql.com/doc/workbench/en/wb-installing-windows.html.
 	- [Optional] install mysql client application:ex: MySql Workbench (https://dev.mysql.com/downloads/workbench/) 
@@ -30,7 +30,7 @@ Set up to run in eclipse
 	- Configure server for sutdbank 	
 		+ After finishing those steps, there must be a project folder named Servers created in your workspace.
 		+ Under project Servers, open server.xml file, and add Realm configuration at the end of the file: [inside  <Engine> tag]
-		example: (modify according to your local database configuration)
+		example: (MODIFY according to your local DATABASE CONFIGURATION)
 		 
 			<Realm className="org.apache.catalina.realm.JDBCRealm"
 			driverName="org.gjt.mm.mysql.Driver"
@@ -47,7 +47,7 @@ Set up to run in eclipse
 		+ email.properties.
 	
 5. Run sutdbank-Webapp:
-	- Open class sutdbank.DbCreator run as Java Application to setup database.
+	- Open class sutdbank.DbCreator run as Java Application to setup database. 
 	- Select sutdbank project, right click and select Run as/Run on Server.  
 	- Access the web page with url: http://localhost:3306/sutdbank/
 	- Default account for staff: [username/password]:   staff_1/123456
