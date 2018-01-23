@@ -42,6 +42,7 @@ Set up to run in eclipse
 		+ email.properties.
 	
 5. Run sutdbank-Webapp:
+	- In project, copy file /libs/mysql-connector-java-5.1.35.jar. Navigate to your tomcat/lib folder, paste it into lib folder.
 	- Open class sutdbank.DbCreator run as Java Application to setup database. 
 	- Select sutdbank project, right click and select Run as/Run on Server.  
 	- Access the web page with url: http://localhost:3306/sutdbank/
