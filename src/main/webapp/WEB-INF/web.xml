@@ -23,6 +23,14 @@
 		<welcome-file>index.jsp</welcome-file>
 	</welcome-file-list>
 
+	<!-- context param -->
+	<context-param>
+		<description>Location to store uploaded file</description>
+		<param-name>file-upload</param-name>
+		<param-value>/Users/lylytran/Projects/BankWebApp/WEBAPPS_DATA/</param-value>
+	</context-param>
+	<!-- login -->
+
 	<login-config>
 		<auth-method>FORM</auth-method>
 		<realm-name>jdbcRealm</realm-name>

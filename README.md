@@ -18,11 +18,6 @@ Set up to run in eclipse
 	- [Optional] install mysql client application:ex: MySql Workbench (https://dev.mysql.com/downloads/workbench/) 
 
 3. Prepare eclipse
-	- Make sure that m2e plugin is installed (should already be included by default in newest eclipse version) .
-		+ Go to Help/About Eclipse/Installation Details. If it was installed, you must see "m2e-Maven Integration For Eclipse" on the list.
-		+ To install m2e plugin: 
-			Go to Help/Install New Software, parse "http://download.eclipse.org/technology/m2e/releases" to text field "Work with". 
-			In displayed table, select "Maven Integration For Eclipse", click "Next" --> ... --> "Finish"
 	- Install tomcat server
 		+ The instruction can be found at: http://crunchify.com/step-by-step-guide-to-setup-and-install-apache-tomcat-server-in-eclipse-development-environment-ide/
 			- Download and extract Apache Tomcat. (at http://tomcat.apache.org/download-80.cgi)
@@ -40,9 +35,9 @@ Set up to run in eclipse
 			userRoleTable="user_role" roleNameCol="role" />
 		
 4. Import project into eclipse
-	Prerequisite: Eclipse with m2e plugin, mysql server, web server (tomcat)
+	Prerequisite: Eclipse with mysql server, web server (tomcat)
 	- Click on File/Import..., Select General/Existing Projects into workspace. Browse to sutdbank source folder, then click "finish".
-	- Update configurations under /src/main/resources if necessary:
+	- Update configurations under /src/main/resources:
 		+ database.properties.
 		+ email.properties.
 	
