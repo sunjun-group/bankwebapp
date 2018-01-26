@@ -32,7 +32,7 @@ public class UserDAOImpl extends AbstractDAOImpl implements UserDAO {
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 		try {
-			ps = conn.prepareStatement("SELECT id, user_name, status FROM USER WHERE user_name=?");
+			ps = conn.prepareStatement("SELECT id, user_name, status FROM user WHERE user_name=?");
 			ps.setString(1, userName);
 			rs = ps.executeQuery();
 			if (rs.next()) {
@@ -56,7 +56,7 @@ public class UserDAOImpl extends AbstractDAOImpl implements UserDAO {
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 		try {
-			ps = prepareStmt(conn, "INSERT INTO USER(user_name, password) VALUES(?,?)");
+			ps = prepareStmt(conn, "INSERT INTO user(user_name, password) VALUES(?,?)");
 			int idx = 1;
 			ps.setString(idx++, user.getUserName());
 			ps.setString(idx++, user.getPassword());
