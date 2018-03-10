@@ -10,7 +10,7 @@ Contents
     + [MySQL 5.7 or later](#mysql-5-7-or-later)
     + [MySQL WorkBench (*Optional*)](#mysql-workbench-optional-)
   * [Deployment guide](#deployment-guide)
-    + [Step 1. Clone or download the source code from [this repository](https://github.com/sunjun-group/bankwebapp)](#step-1-clone-or-download-the-source-code-from-this-repository-https-github-com-sunjun-group-bankwebapp-)
+    + [Step 1. Clone or download the source code from this repository](#step-1-clone-or-download-the-source-code-from-this-repository)
     + [Step 2. Import the web application project into Eclipse](#step-2-import-the-web-application-project-into-eclipse)
     + [Step 3. Update your MySQL server configurations](#step-3-update-your-mysql-server-configurations)
     + [Step 4. Start MySQL server](#step-4-start-mysql-server)
@@ -48,7 +48,7 @@ We shall refer to the Apache Tomcat installation directory as `<TOMCAT_HOME>`.
 
 ### MySQL 5.7 or later
 
-See [yet another insignificant programming notes](https://www.ntu.edu.sg/home/ehchua/programming/sql/MySQL_HowTo.html#zz-3.1) for installation instructions. A default MySQL server account with username `root` will be created and you will be prompted to create a password. 
+See [yet another insignificant programming notes](https://www.ntu.edu.sg/home/ehchua/programming/sql/MySQL_HowTo.html#zz-3.1) for installation instructions. A default MySQL server account with the username `root` will be created and you will be prompted to create a password. 
 
 *Do not forget* your password!
 
@@ -60,9 +60,9 @@ See [yet another insignificant programming notes](https://www.ntu.edu.sg/home/eh
 
 This guide assumes that you are using Eclipse IDE *for Java EE Developers*.
 
-### Step 1. Clone or download the source code from [this repository](https://github.com/sunjun-group/bankwebapp)
+### Step 1. Clone or download the source code from this repository
 
-Download this repository as a zip file and extract it into your Eclipse workspace.
+Download [this repository](https://github.com/sunjun-group/bankwebapp) as a zip file and extract it into your Eclipse workspace.
 
 Alternatively, navigate to your Eclipse workspace using your terminal or command prompt and run the following code to clone the repository into your Eclipse workspace:
 
@@ -142,7 +142,7 @@ Replace the `connectionPassword` field with the password of your `root` MySQL se
 
 Right-click on your web application project in Eclipse and select `Run As --> Run on server`.
 
-Navigate your web browser to http://localhost:8080/bankwepapp.
+Navigate your web browser to http://localhost:8080/sutdbank.
 
 You should be able to log in with the default account `staff_1/123456`.
 
@@ -185,6 +185,6 @@ This creates the file `<TOMCAT_HOME>/webapps/bankwebapp.war`.
 
 #### Step 8d. Run your web application from Apache Tomcat
 
-Start Apache Tomcat (see [instructions](https://www.ntu.edu.sg/home/ehchua/programming/howto/Tomcat_HowTo.html#zz-2.4)) and navigate your web browser to http://localhost:8080/bankwepapp.
+Start Apache Tomcat (see [instructions](https://www.ntu.edu.sg/home/ehchua/programming/howto/Tomcat_HowTo.html#zz-2.4)) and navigate your web browser to http://localhost:8080/sutdbank.
 
 You should be able to log in with the default account `staff_1/123456`.
