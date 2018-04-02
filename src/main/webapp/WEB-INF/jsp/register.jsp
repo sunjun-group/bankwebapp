@@ -68,6 +68,7 @@
 					<label for="fin" class="control-label">FIN</label>
 					<input type="text" class="form-control" id="fin" name="fin" placeholder="FIN number">
 				</div>
+                                <!--
 				<div id="input-group-dateOfBirth" class="form-group">
 					<label for="dateOfBirth" class="control-label">Date of Birth</label>
 					<input type="date" class="form-control" id="dateOfBirth" name="dateOfBirth" placeholder="Date of Birth">
@@ -84,6 +85,7 @@
 					<label for="address" class="control-label">Address</label>
 					<input type="text" class="form-control" id="address" name="address" placeholder="Address">
 				</div>
+                                -->
 				<div id="input-group-email" class="form-group">
 					<label for="email" class="control-label">Email</label>
 					<input type="text" class="form-control" id="email" name="email" placeholder="Email">

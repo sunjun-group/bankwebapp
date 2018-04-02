@@ -15,12 +15,16 @@ https://opensource.org/licenses/ECL-2.0
 
 package sg.edu.sutd.bank.webapp.service;
 
+import java.sql.Connection;
 import sg.edu.sutd.bank.webapp.commons.ServiceException;
+import sg.edu.sutd.bank.webapp.model.User;
 import sg.edu.sutd.bank.webapp.model.UserRole;
 
 
 public interface UserRoleDAO {
 
-	void create(UserRole userRole) throws ServiceException;
+        UserRole loadUserRole(String userName, User user) throws ServiceException;
+    
+	void create(UserRole userRole, Connection conn) throws ServiceException;
 
 }

@@ -18,14 +18,15 @@ package sg.edu.sutd.bank.webapp.servlet;
 import java.rmi.server.UID;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class TransactionCodeGenerator {
 
 	public static List<String> generateCodes(int num) {
-		List<String> codes = new ArrayList<String>(num);
+		List<String> codes = new ArrayList<>(num);
 		for (int idx = 0; idx < num; ++idx) {
-			UID code = new UID();
-			codes.add(code.toString());
+			UUID code = UUID.randomUUID();
+			codes.add(String.valueOf(code));
 		}
 		return codes;
 	}

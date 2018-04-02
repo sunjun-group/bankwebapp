@@ -12,11 +12,12 @@ https://opensource.org/licenses/ECL-2.0
 	or implied. See the License for the specific language governing
 	permissions and limitations under the License.
  */
-
 package sg.edu.sutd.bank.webapp.servlet;
 
 import java.io.IOException;
+import java.sql.Connection;
 import java.sql.Date;
+import java.sql.SQLException;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -28,6 +29,7 @@ import sg.edu.sutd.bank.webapp.model.ClientInfo;
 import sg.edu.sutd.bank.webapp.model.Role;
 import sg.edu.sutd.bank.webapp.model.User;
 import sg.edu.sutd.bank.webapp.model.UserRole;
+import static sg.edu.sutd.bank.webapp.service.AbstractDAOImpl.connectDB;
 import sg.edu.sutd.bank.webapp.service.ClientInfoDAO;
 import sg.edu.sutd.bank.webapp.service.ClientInfoDAOImpl;
 import sg.edu.sutd.bank.webapp.service.EmailService;
@@ -42,41 +44,57 @@ import sg.edu.sutd.bank.webapp.service.UserRoleDAOImpl;
  */
 @WebServlet("/register")
 public class RegisterServlet extends DefaultServlet {
-	private static final long serialVersionUID = 1L;
-	private ClientInfoDAO clientAccountDAO = new ClientInfoDAOImpl();
-	private UserDAO userDAO = new UserDAOImpl();
-	private UserRoleDAO userRoleDAO = new UserRoleDAOImpl();
-	private EmailService emailService = new EmailServiceImp();
 
-	public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		response.setContentType("text/html");
-		User user = new User();
-		user.setUserName(request.getParameter("username"));
-		user.setPassword(request.getParameter("password"));
+    private static final long serialVersionUID = 1L;
+    private ClientInfoDAO clientAccountDAO = new ClientInfoDAOImpl();
+    private UserDAO userDAO = new UserDAOImpl();
+    private UserRoleDAO userRoleDAO = new UserRoleDAOImpl();
+    private EmailService emailService = new EmailServiceImp();
 
-		ClientInfo clientAccount = new ClientInfo();
-		clientAccount.setFullName(request.getParameter("fullName"));
-		clientAccount.setFin(request.getParameter("fin"));
-		clientAccount.setDateOfBirth(Date.valueOf(request.getParameter("dateOfBirth")));
-		clientAccount.setOccupation(request.getParameter("occupation"));
-		clientAccount.setMobileNumber(request.getParameter("mobileNumber"));
-		clientAccount.setAddress(request.getParameter("address"));
-		clientAccount.setEmail(request.getParameter("email"));
-		clientAccount.setUser(user);
-		
-		try {
-			userDAO.create(user);
-			clientAccountDAO.create(clientAccount);
-			UserRole userRole = new UserRole();
-			userRole.setUser(user);
-			userRole.setRole(Role.client);
-			userRoleDAO.create(userRole );
-			emailService.sendMail(clientAccount.getEmail(), "SutdBank registration", "Thank you for the registration!");
-			sendMsg(request, "You are successfully registered...");
-			redirect(response, ServletPaths.WELCOME);
-		} catch (ServiceException e) {
-			sendError(request, e.getMessage());
-			forward(request, response);
-		}
-	}
+    public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        response.setContentType("text/html");
+        User user = new User();
+        user.setUserName(request.getParameter("username"));
+        user.setPassword(request.getParameter("password"));
+
+        ClientInfo clientAccount = new ClientInfo();
+        clientAccount.setFullName(request.getParameter("fullName"));
+        clientAccount.setFin(request.getParameter("fin"));
+        //clientAccount.setDateOfBirth(Date.valueOf(request.getParameter("dateOfBirth")));
+        //clientAccount.setOccupation(request.getParameter("occupation"));
+        //clientAccount.setMobileNumber(request.getParameter("mobileNumber"));
+        //clientAccount.setAddress(request.getParameter("address"));
+        clientAccount.setEmail(request.getParameter("email"));
+        clientAccount.setUser(user);
+
+        Connection conn = null;
+        try {
+            conn = connectDB();
+            conn.setAutoCommit(false);
+            
+            userDAO.create(user, conn);
+            clientAccountDAO.create(clientAccount, conn);
+            UserRole userRole = new UserRole();
+            userRole.setUser(user);
+            userRole.setRole(Role.client);
+            userRoleDAO.create(userRole, conn);
+            
+            conn.commit();
+            
+            emailService.sendMail(clientAccount.getEmail(), "SutdBank registration", "Thank you for the registration!");
+            sendMsg(request, "You are successfully registered...");
+            redirect(response, ServletPaths.WELCOME);
+        } catch (ServiceException | SQLException e) {
+            try {conn.rollback();} catch(SQLException ex) {}
+            sendError(request, e.getMessage());
+            forward(request, response);
+        } finally {
+            try {
+                if(conn != null && !conn.isClosed()) {
+                    conn.close();
+                }
+            } catch (SQLException ex) {}
+        }
+        
+    }
 }

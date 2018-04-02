@@ -25,8 +25,7 @@ import sg.edu.sutd.bank.webapp.commons.ServiceException;
 public class TransactionCodesDAOImp extends AbstractDAOImpl implements TransactionCodesDAO {
 
 	@Override
-	public void create(List<String> codes, int userId) throws ServiceException {
-		Connection conn = connectDB();
+	public void create(List<String> codes, int userId, Connection conn) throws ServiceException {
 		PreparedStatement ps;
 		try {
 			StringBuilder query = new StringBuilder();

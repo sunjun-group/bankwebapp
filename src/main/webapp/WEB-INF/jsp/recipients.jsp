@@ -21,7 +21,7 @@
             <div class="container">
                 <%@include file="errorMessage.jsp"%>
                 <div id="accountBalance">
-                    <h3>Account Balance:  </h3>
+                    <h3>New Recipient:</h3>
                     <div>${clientInfo.account.amount}</div>
                 </div>
                 <div id="transHistory">
