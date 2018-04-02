@@ -12,7 +12,6 @@ https://opensource.org/licenses/ECL-2.0
 	or implied. See the License for the specific language governing
 	permissions and limitations under the License.
  */
-
 package sg.edu.sutd.bank.webapp.service;
 
 import java.sql.Connection;
@@ -22,44 +21,63 @@ import java.sql.SQLException;
 
 import sg.edu.sutd.bank.webapp.commons.ServiceException;
 import sg.edu.sutd.bank.webapp.model.ClientAccount;
+import sg.edu.sutd.bank.webapp.model.ClientTransaction;
 
 public class ClientAccountDAOImpl extends AbstractDAOImpl implements ClientAccountDAO {
 
+    @Override
+    public void create(ClientAccount clientAccount, Connection conn) throws ServiceException {
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        try {
+            ps = prepareStmt(conn, "INSERT INTO client_account(user_id, amount) VALUES(?,?)");
+            int idx = 1;
+            ps.setInt(idx++, clientAccount.getUser().getId());
+            ps.setBigDecimal(idx++, clientAccount.getAmount());
+            executeInsert(clientAccount, ps);
+        } catch (SQLException e) {
+            throw ServiceException.wrap(e);
+        }
+    }
+    
+    @Override
+    public void executeTransaction(ClientTransaction clientTransaction, Connection conn) throws ServiceException {
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        int idx;
+        try {
+            ps = prepareStmt(conn, "UPDATE client_account SET amount = amount - ? WHERE user_id = ?");
+            idx = 1;
+            ps.setBigDecimal(idx++, clientTransaction.getAmount());
+            ps.setInt(idx++, clientTransaction.getUser().getId());
+            executeUpdate(ps);
+            
+            ps = prepareStmt(conn, "UPDATE client_account SET amount = amount + ? WHERE id = ?");
+            idx = 1;
+            ps.setBigDecimal(idx++, clientTransaction.getAmount());
+            ps.setInt(idx++, clientTransaction.getToAccountNum());
+            executeUpdate(ps);
+        } catch (SQLException e) {
+            throw ServiceException.wrap(e);
+        } 
+    }
 
-	@Override
-	public void create(ClientAccount clientAccount) throws ServiceException {
-		Connection conn = connectDB();
-		PreparedStatement ps = null;
-		ResultSet rs = null;
-		try {
-			ps = prepareStmt(conn, "INSERT INTO client_account(user_id, amount) VALUES(?,?)");
-			int idx = 1;
-			ps.setInt(idx++, clientAccount.getUser().getId());
-			ps.setBigDecimal(idx++, clientAccount.getAmount());
-			executeInsert(clientAccount, ps);
-		} catch (SQLException e) {
-			throw ServiceException.wrap(e);
-		} finally {
-			closeDb(conn, ps, rs);
-		}
-	}
-
-	@Override
-	public void update(ClientAccount clientAccount) throws ServiceException {
-		Connection conn = connectDB();
-		PreparedStatement ps = null;
-		ResultSet rs = null;
-		try {
-			ps = prepareStmt(conn, "UPDATE client_account SET amount = ? WHERE user_id = ?");
-			int idx = 1;
-			ps.setBigDecimal(idx++, clientAccount.getAmount());
-			ps.setInt(idx++, clientAccount.getUser().getId());
-			executeUpdate(ps);
-		} catch (SQLException e) {
-			throw ServiceException.wrap(e);
-		} finally {
-			closeDb(conn, ps, rs);
-		}
-	}
+    @Override
+    public void update(ClientAccount clientAccount) throws ServiceException {
+        Connection conn = connectDB();
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        try {
+            ps = prepareStmt(conn, "UPDATE client_account SET amount = ? WHERE user_id = ?");
+            int idx = 1;
+            ps.setBigDecimal(idx++, clientAccount.getAmount());
+            ps.setInt(idx++, clientAccount.getUser().getId());
+            executeUpdate(ps);
+        } catch (SQLException e) {
+            throw ServiceException.wrap(e);
+        } finally {
+            closeDb(conn, ps, rs);
+        }
+    }
 
 }

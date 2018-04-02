@@ -18,4 +18,6 @@ import java.math.BigDecimal;
 
 public class Constants {
 	public static final BigDecimal INIT_AMOUNT = new BigDecimal(100);
+        
+        public static final BigDecimal TRANSACTION_LIMIT = new BigDecimal(10);
 }

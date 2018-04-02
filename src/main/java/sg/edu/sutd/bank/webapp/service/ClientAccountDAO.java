@@ -15,13 +15,17 @@ https://opensource.org/licenses/ECL-2.0
 
 package sg.edu.sutd.bank.webapp.service;
 
+import java.sql.Connection;
 import sg.edu.sutd.bank.webapp.commons.ServiceException;
 import sg.edu.sutd.bank.webapp.model.ClientAccount;
+import sg.edu.sutd.bank.webapp.model.ClientTransaction;
 
 
 public interface ClientAccountDAO {
 
-	void create(ClientAccount clientAccount) throws ServiceException;
+	void create(ClientAccount clientAccount, Connection conn) throws ServiceException;
+        
+        void executeTransaction(ClientTransaction clientTransaction, Connection conn) throws ServiceException;
 
 	void update(ClientAccount clientAccount) throws ServiceException;
 

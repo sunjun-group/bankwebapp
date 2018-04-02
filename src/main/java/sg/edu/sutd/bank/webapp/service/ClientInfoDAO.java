@@ -15,6 +15,7 @@ https://opensource.org/licenses/ECL-2.0
 
 package sg.edu.sutd.bank.webapp.service;
 
+import java.sql.Connection;
 import java.util.List;
 
 import sg.edu.sutd.bank.webapp.commons.ServiceException;
@@ -23,7 +24,7 @@ import sg.edu.sutd.bank.webapp.model.ClientInfo;
 
 public interface ClientInfoDAO {
 
-	void create(ClientInfo account) throws ServiceException;
+	void create(ClientInfo account, Connection conn) throws ServiceException;
 
 	List<ClientInfo> loadWaitingList() throws ServiceException;
 

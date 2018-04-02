@@ -15,6 +15,7 @@ https://opensource.org/licenses/ECL-2.0
 
 package sg.edu.sutd.bank.webapp.service;
 
+import java.sql.Connection;
 import java.util.List;
 
 import sg.edu.sutd.bank.webapp.commons.ServiceException;
@@ -25,8 +26,8 @@ public interface UserDAO {
 
 	User loadUser(String userName) throws ServiceException;
 
-	void create(User user) throws ServiceException;
+	void create(User user, Connection conn) throws ServiceException;
 
-	void updateDecision(List<User> users) throws ServiceException;
+	void updateDecision(User user, Connection conn) throws ServiceException;
 
 }
