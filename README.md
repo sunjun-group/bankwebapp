@@ -6,7 +6,7 @@ Contents
   * [Pre-requisites](#pre-requisites)
     + [Java Development Kit (JDK) 1.8 or later](#java-development-kit-jdk-1-8-or-later)
     + [Eclipse IDE for Java EE Developers (*Optional* but *recommended*)](#eclipse-ide-for-java-ee-developers-optional-but-recommended-)
-    + [Apache Tomcat 8.0.33]
+    + [Apache Tomcat 8.0.33](#apache-tomcat-8-0-33)
     + [MySQL 5.7 or later](#mysql-5-7-or-later)
     + [MySQL WorkBench (*Optional*)](#mysql-workbench-optional-)
   * [Deployment guide](#deployment-guide)
@@ -40,7 +40,7 @@ Make sure that you have selected Eclipse's default JRE to be JDK 1.8 or later (s
 
 See [yet another insignificant programming notes](https://www.ntu.edu.sg/home/ehchua/programming/howto/EclipseJava_HowTo.html#zz-1) for installation instructions.
 
-### Apache Tomcat 8.0 or later
+### Apache Tomcat 8.0.33
 
 See [yet another insignificant programming notes](https://www.ntu.edu.sg/home/ehchua/programming/howto/Tomcat_HowTo.html#zz-2.) for installation instructions.
 
