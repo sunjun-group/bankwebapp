@@ -6,11 +6,11 @@ Contents
   * [Pre-requisites](#pre-requisites)
     + [Java Development Kit (JDK) 1.8 or later](#java-development-kit-jdk-1-8-or-later)
     + [Eclipse IDE for Java EE Developers (*Optional* but *recommended*)](#eclipse-ide-for-java-ee-developers-optional-but-recommended-)
-    + [Apache Tomcat 8.0 or later](#apache-tomcat-8-0-or-later)
+    + [Apache Tomcat 8.0.33]
     + [MySQL 5.7 or later](#mysql-5-7-or-later)
     + [MySQL WorkBench (*Optional*)](#mysql-workbench-optional-)
   * [Deployment guide](#deployment-guide)
-    + [Step 1. Clone or download the source code from this repository](#step-1-clone-or-download-the-source-code-from-this-repository)
+    + [Step 1. Fork or download the source code from this repository](#step-1-clone-or-download-the-source-code-from-this-repository)
     + [Step 2. Import the web application project into Eclipse](#step-2-import-the-web-application-project-into-eclipse)
     + [Step 3. Update your MySQL server configurations](#step-3-update-your-mysql-server-configurations)
     + [Step 4. Start MySQL server](#step-4-start-mysql-server)
