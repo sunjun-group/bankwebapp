@@ -15,13 +15,17 @@ https://opensource.org/licenses/ECL-2.0
 
 package sg.edu.sutd.bank.webapp.service;
 
+import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
 
 import sg.edu.sutd.bank.webapp.commons.ServiceException;
 import sg.edu.sutd.bank.webapp.model.ClientAccount;
+import sg.edu.sutd.bank.webapp.model.ClientTransaction;
+import sg.edu.sutd.bank.webapp.model.TransactionStatus;
 
 public class ClientAccountDAOImpl extends AbstractDAOImpl implements ClientAccountDAO {
 
@@ -59,6 +63,58 @@ public class ClientAccountDAOImpl extends AbstractDAOImpl implements ClientAccou
 			throw ServiceException.wrap(e);
 		} finally {
 			closeDb(conn, ps, rs);
+		}
+	}
+	
+	/* get transaction details: amount, sender, receiver from client_transaction
+	   update sender and receiver alike
+	*/
+	public void executeTransaction(List<ClientTransaction> transactions) throws ServiceException {	
+		Connection conn = connectDB();
+		try {
+			for (ClientTransaction transaction : transactions) {
+				if (transaction.getStatus() == TransactionStatus.APPROVED) {
+					PreparedStatement ps = prepareStmt(conn, "SELECT * FROM client_transaction WHERE id = ?");
+					ps.setInt(1, transaction.getId()); // transaction-specific id
+					ResultSet rs = ps.executeQuery();
+					rs.next();
+					
+					// extracts USERID of sender & receiver
+					transaction.setFromAccount(rs.getInt("user_id"));
+					transaction.setToAccount(rs.getInt("to_account_num"));
+					BigDecimal amount = rs.getBigDecimal("amount");
+					
+					// Deduct money from sender's account
+					PreparedStatement psf = prepareStmt(conn, "UPDATE client_account SET amount = amount - ? WHERE user_id = ? AND amount >= ?");
+					psf.setBigDecimal(1, amount);
+					psf.setInt(2, transaction.getFromAccount());
+					psf.setBigDecimal(3, amount);
+					
+					// Insert money into recipient's account
+					PreparedStatement pst = prepareStmt(conn, "UPDATE client_account SET amount = amount + ? WHERE user_id = ?");
+					pst.setBigDecimal(1, amount);
+					pst.setInt(2, transaction.getToAccount());
+					
+					// check if receiver's account is valid
+					PreparedStatement checker = prepareStmt(conn, "SELECT count(user_id) FROM client_account WHERE user_id = ?");
+					checker.setInt(1, transaction.getToAccount());
+					ResultSet checkResult = checker.executeQuery();
+					checkResult.next();
+					
+					// execute if receiver exists, else throws exception
+					if (checkResult.getInt("count(user_id)") == 1) {
+						int from = psf.executeUpdate();
+						int to = pst.executeUpdate();
+
+						if (from != 1 || to != 1)
+							throw new ServiceException(new IllegalStateException("From/to account not properly updated."));
+					} else {
+						throw new ServiceException(new IllegalStateException("Receiver does not exist."));
+					}
+				}
+			}
+		} catch (SQLException e) {
+			throw ServiceException.wrap(e);
 		}
 	}
 
