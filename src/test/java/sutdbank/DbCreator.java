@@ -17,7 +17,7 @@ import java.sql.Statement;
 import sg.edu.sutd.bank.webapp.service.AbstractDAOImpl;
 
 public class DbCreator extends AbstractDAOImpl {
-	protected static String dbScript = "create.sql";
+	protected static String dbScript = "C:\\Users\\Shane\\Documents\\Govtech Engineering Course\\sun\\Project\\bankwebapp\\src\\main\\resources\\create.sql";
 	
 	public static void main(String[] args) {
 		try {
@@ -78,7 +78,7 @@ public class DbCreator extends AbstractDAOImpl {
 		String s;
 		StringBuffer sb = new StringBuffer();
 		ClassLoader classLoader = AbstractDAOImpl.class.getClassLoader();
-		File file = new File(classLoader.getResource(dbScript).getFile());
+		File file = new File(dbScript);
 		FileReader fr = new FileReader(file);
 		BufferedReader br = new BufferedReader(fr);
 		while ((s = br.readLine()) != null) {
