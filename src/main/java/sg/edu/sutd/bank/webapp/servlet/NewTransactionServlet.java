@@ -30,6 +30,8 @@ import sg.edu.sutd.bank.webapp.model.ClientTransaction;
 import sg.edu.sutd.bank.webapp.model.User;
 import sg.edu.sutd.bank.webapp.service.ClientTransactionDAO;
 import sg.edu.sutd.bank.webapp.service.ClientTransactionDAOImpl;
+import sg.edu.sutd.bank.webapp.service.TransactionCodesDAO;
+import sg.edu.sutd.bank.webapp.service.TransactionCodesDAOImp;
 
 @WebServlet(NEW_TRANSACTION)
 public class NewTransactionServlet extends DefaultServlet {
@@ -39,6 +41,13 @@ public class NewTransactionServlet extends DefaultServlet {
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		try {
+			// check if transaction code is valid. if valid, update table
+			TransactionCodesDAO tcd = new TransactionCodesDAOImp();
+			if (!tcd.isValid(req.getParameter("transcode"), getUserId(req))) 
+				throw ServiceException.wrap(new IllegalArgumentException("Invalid or used transaction code."));
+			
+			tcd.updateDB(req.getParameter("transcode"));
+			
 			ClientTransaction clientTransaction = new ClientTransaction();
 			User user = new User(getUserId(req));
 			clientTransaction.setUser(user);

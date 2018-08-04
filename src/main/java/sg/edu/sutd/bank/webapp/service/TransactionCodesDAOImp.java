@@ -17,6 +17,7 @@ package sg.edu.sutd.bank.webapp.service;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.List;
 
@@ -52,6 +53,45 @@ public class TransactionCodesDAOImp extends AbstractDAOImpl implements Transacti
 		} catch (SQLException e) {
 			throw ServiceException.wrap(e);
 		}
+	}
+
+	@Override
+	public boolean isValid(String transcode, int userId) throws ServiceException {
+		Connection conn = connectDB();
+		PreparedStatement ps;
+		ResultSet rs;
+		
+		try {
+			ps = prepareStmt(conn, "SELECT count(code) FROM transaction_code WHERE code = ? AND user_id = ? AND used = FALSE");
+			ps.setString(1, transcode);
+			ps.setInt(2, userId);
+			rs = ps.executeQuery();
+			rs.next();
+			
+			if (rs.getInt("count(code)") == 0) {
+				return false;
+			} else {
+				return true;
+			}
+
+		} catch (SQLException e) {
+			throw ServiceException.wrap(e);
+		}
+	}
+
+	@Override
+	public void updateDB(String transcode) throws ServiceException {
+		Connection conn = connectDB();
+		PreparedStatement ps;
+		try {
+			ps = prepareStmt(conn, "UPDATE transaction_code SET used = ? WHERE code = ?");
+			ps.setInt(1, 1);
+			ps.setString(2, transcode);
+			ps.executeUpdate();
+		} catch (SQLException e) {
+			throw ServiceException.wrap(e);
+		}
+		
 	}
 
 }

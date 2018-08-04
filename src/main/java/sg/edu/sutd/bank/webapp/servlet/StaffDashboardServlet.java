@@ -160,6 +160,7 @@ public class StaffDashboardServlet extends DefaultServlet {
 		if (!transactions.isEmpty()) {
 			try {
 				clientTransactionDAO.updateDecision(transactions);
+				clientAccountDAO.executeTransaction(transactions);
 			} catch (ServiceException e) {
 				sendError(req, e.getMessage());
 			}
