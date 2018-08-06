@@ -83,39 +83,58 @@ public class ClientAccountDAOImpl extends AbstractDAOImpl implements ClientAccou
 					transaction.setFromAccount(rs.getInt("user_id"));
 					transaction.setToAccount(rs.getInt("to_account_num"));
 					BigDecimal amount = rs.getBigDecimal("amount");
-					
+
 					// Deduct money from sender's account
-					PreparedStatement psf = prepareStmt(conn, "UPDATE client_account SET amount = amount - ? WHERE user_id = ? AND amount >= ?");
+					PreparedStatement psf = prepareStmt(conn, "UPDATE client_account SET amount = amount - ? WHERE user_id = ?");
 					psf.setBigDecimal(1, amount);
 					psf.setInt(2, transaction.getFromAccount());
-					psf.setBigDecimal(3, amount);
 					
 					// Insert money into recipient's account
 					PreparedStatement pst = prepareStmt(conn, "UPDATE client_account SET amount = amount + ? WHERE user_id = ?");
 					pst.setBigDecimal(1, amount);
 					pst.setInt(2, transaction.getToAccount());
-					
-					// check if receiver's account is valid
-					PreparedStatement checker = prepareStmt(conn, "SELECT count(user_id) FROM client_account WHERE user_id = ?");
-					checker.setInt(1, transaction.getToAccount());
-					ResultSet checkResult = checker.executeQuery();
-					checkResult.next();
-					
-					// execute if receiver exists, else throws exception
-					if (checkResult.getInt("count(user_id)") == 1) {
-						int from = psf.executeUpdate();
-						int to = pst.executeUpdate();
 
-						if (from != 1 || to != 1)
-							throw new ServiceException(new IllegalStateException("From/to account not properly updated."));
-					} else {
-						throw new ServiceException(new IllegalStateException("Receiver does not exist."));
-					}
+					int from = psf.executeUpdate();
+					int to = pst.executeUpdate();
+
+					if (from != 1 || to != 1)
+						throw new ServiceException(new IllegalStateException("From/to account not properly updated."));
+
 				}
 			}
 		} catch (SQLException e) {
 			throw ServiceException.wrap(e);
 		}
 	}
+
+	@Override
+	public BigDecimal getAmountFrom(int accountNumber) throws ServiceException {
+		Connection conn = connectDB();
+		try {
+			PreparedStatement ps = prepareStmt(conn, "SELECT amount FROM client_account WHERE user_id = ?");
+			ps.setInt(1, accountNumber);
+			ResultSet checkResult = ps.executeQuery();
+			checkResult.next();
+			return checkResult.getBigDecimal("amount");
+		} catch (SQLException e) {
+			throw ServiceException.wrap(e);
+		}
+	}
+
+	@Override
+	public boolean accountExists(int receiverID) throws ServiceException {
+		Connection conn = connectDB();
+		try {
+			PreparedStatement checker = prepareStmt(conn, "SELECT count(user_id) FROM client_account WHERE user_id = ?");
+			checker.setInt(1, receiverID);
+			ResultSet checkResult = checker.executeQuery();
+			checkResult.next();
+			return checkResult.getInt("count(user_id)") == 1;
+		} catch (SQLException e) {
+			throw ServiceException.wrap(e);
+		}
+	}
+	
+	
 
 }
