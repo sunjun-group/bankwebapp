@@ -25,6 +25,8 @@ public class ClientTransaction extends AbstractIdEntity {
 	private Date dateTime;
 	private String toAccountNum;
 	private BigDecimal amount;
+	private int fromAccount;
+	private int toAccount;
 
 	public String getTransCode() {
 		return transCode;
@@ -72,6 +74,22 @@ public class ClientTransaction extends AbstractIdEntity {
 
 	public void setToAccountNum(String toAccountNum) {
 		this.toAccountNum = toAccountNum;
+	}
+	
+	public int getFromAccount() {
+		return fromAccount;
+	}
+
+	public void setFromAccount(int fromAccount) {
+		this.fromAccount = fromAccount;
+	}
+
+	public int getToAccount() {
+		return toAccount;
+	}
+
+	public void setToAccount(int toAccount) {
+		this.toAccount = toAccount;
 	}
 
 }

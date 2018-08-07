@@ -28,8 +28,12 @@ import javax.servlet.http.HttpServletResponse;
 import sg.edu.sutd.bank.webapp.commons.ServiceException;
 import sg.edu.sutd.bank.webapp.model.ClientTransaction;
 import sg.edu.sutd.bank.webapp.model.User;
+import sg.edu.sutd.bank.webapp.service.ClientAccountDAO;
+import sg.edu.sutd.bank.webapp.service.ClientAccountDAOImpl;
 import sg.edu.sutd.bank.webapp.service.ClientTransactionDAO;
 import sg.edu.sutd.bank.webapp.service.ClientTransactionDAOImpl;
+import sg.edu.sutd.bank.webapp.service.TransactionCodesDAO;
+import sg.edu.sutd.bank.webapp.service.TransactionCodesDAOImp;
 
 @WebServlet(NEW_TRANSACTION)
 public class NewTransactionServlet extends DefaultServlet {
@@ -39,6 +43,26 @@ public class NewTransactionServlet extends DefaultServlet {
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		try {
+			BigDecimal amount = new BigDecimal(req.getParameter("amount"));
+			int senderID = getUserId(req);
+			int receiverID = Integer.parseInt(req.getParameter("toAccountNum"));
+			ClientAccountDAO cad = new ClientAccountDAOImpl();
+
+			// check if transaction code is valid. if valid, update table
+			TransactionCodesDAO tcd = new TransactionCodesDAOImp();
+			if (!tcd.isValid(req.getParameter("transcode"), getUserId(req))) 
+				throw ServiceException.wrap(new IllegalArgumentException("Invalid or used transaction code."));
+			
+			// check if sender have enough money
+			if (cad.getAmountFrom(senderID).compareTo(amount) < 0)
+				throw ServiceException.wrap(new IllegalArgumentException("Your account has insufficient funds for this transaction."));
+			
+			// check if valid receiver
+			if (!cad.accountExists(receiverID))
+				throw ServiceException.wrap(new IllegalArgumentException("There is no such receiver."));
+			
+			tcd.updateDB(req.getParameter("transcode"));
+			
 			ClientTransaction clientTransaction = new ClientTransaction();
 			User user = new User(getUserId(req));
 			clientTransaction.setUser(user);
