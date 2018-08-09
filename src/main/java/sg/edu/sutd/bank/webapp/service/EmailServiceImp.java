@@ -56,7 +56,7 @@ public class EmailServiceImp implements EmailService {
 		session.setDebug(true);
 		try {
 			Message message = new MimeMessage(session);
-			message.setFrom(new InternetAddress("testaccount.noreply@yahoo.com"));
+			message.setFrom(new InternetAddress(userName));
 			message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(toAddr));
 			message.setSubject(subject);
 			message.setText(msg);
