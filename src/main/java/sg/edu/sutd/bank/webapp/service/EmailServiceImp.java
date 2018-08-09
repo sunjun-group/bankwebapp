@@ -37,10 +37,11 @@ public class EmailServiceImp implements EmailService {
 		emailProperties = new Properties();
 		ResourceBundle bundle = ResourceBundle.getBundle("email");
 		emailProperties.setProperty("mail.smtp.host", bundle.getString("mail.smtp.host"));
-		emailProperties.setProperty("mail.smtp.socketFactory.port", bundle.getString("mail.smtp.socketFactory.port"));
-		emailProperties.setProperty("mail.smtp.socketFactory.class", bundle.getString("mail.smtp.socketFactory.class"));
+		//emailProperties.setProperty("mail.smtp.socketFactory.port", bundle.getString("mail.smtp.socketFactory.port"));
+		//emailProperties.setProperty("mail.smtp.socketFactory.class", bundle.getString("mail.smtp.socketFactory.class"));
 		emailProperties.setProperty("mail.smtp.auth", bundle.getString("mail.smtp.auth"));
 		emailProperties.setProperty("mail.smtp.port", bundle.getString("mail.smtp.port"));
+		emailProperties.setProperty("mail.smtp.ssl.enable", "true");
 		userName = bundle.getString("mail.smtp.username");
 		password = bundle.getString("mail.smtp.password");
 	}
@@ -52,9 +53,10 @@ public class EmailServiceImp implements EmailService {
 				return new PasswordAuthentication(userName, password);
 			}
 		});
+		//session.setDebug(true);
 		try {
 			Message message = new MimeMessage(session);
-			message.setFrom(new InternetAddress("from@no-spam.com"));
+			message.setFrom(new InternetAddress(userName));
 			message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(toAddr));
 			message.setSubject(subject);
 			message.setText(msg);
