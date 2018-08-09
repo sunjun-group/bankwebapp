@@ -53,7 +53,7 @@ public class EmailServiceImp implements EmailService {
 				return new PasswordAuthentication(userName, password);
 			}
 		});
-		session.setDebug(true);
+		//session.setDebug(true);
 		try {
 			Message message = new MimeMessage(session);
 			message.setFrom(new InternetAddress(userName));
