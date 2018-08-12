@@ -6,7 +6,7 @@
   <%@include file="pageHeader.jsp"%>
   <body>
 	<%@include file="header.jsp"%>
-	
+
 	<main id="content" class="mainContent sutd-template" role="main">
 	<div class="container">
 		<%@include file="errorMessage.jsp"%>
@@ -25,6 +25,11 @@
 					<input type="text" class="form-control" id="amount" name="amount" placeholder="amount">
 				</div>
 				<button id="createTransBtn" type="submit" class="btn btn-default">Submit</button>
+			</form>
+			<h3>Choose file to upload:</h3>
+			<form action="newTransaction" method="post" enctype="multipart/form-data">
+				<input type="file" name="file" />
+				<input type="submit" value="upload" />
 			</form>
 		</div>
 	</div>
