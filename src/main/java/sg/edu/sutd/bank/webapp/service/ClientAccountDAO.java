@@ -15,8 +15,12 @@ https://opensource.org/licenses/ECL-2.0
 
 package sg.edu.sutd.bank.webapp.service;
 
+import java.math.BigDecimal;
+import java.util.List;
+
 import sg.edu.sutd.bank.webapp.commons.ServiceException;
 import sg.edu.sutd.bank.webapp.model.ClientAccount;
+import sg.edu.sutd.bank.webapp.model.ClientTransaction;
 
 
 public interface ClientAccountDAO {
@@ -24,5 +28,11 @@ public interface ClientAccountDAO {
 	void create(ClientAccount clientAccount) throws ServiceException;
 
 	void update(ClientAccount clientAccount) throws ServiceException;
+
+	void executeTransaction(List<ClientTransaction> transactions) throws ServiceException;
+
+	BigDecimal getAmountFrom(int accountNumber) throws ServiceException;
+
+	boolean accountExists(int receiverID) throws ServiceException;
 
 }
